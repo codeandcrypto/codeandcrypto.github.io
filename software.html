@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software – CodeAndCrypto</title>
+  <meta name="description" content="Open source projects and software development work by Jacob Nulty." />
+  <link rel="icon" href="CodeAndCrypto.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html">
+      <img src="CodeAndCrypto.png" alt="CodeAndCrypto logo" />
+    </a>
+  </nav>
+
+  <main>
+    <h1>Git Repos</h1>
+    <div id="repos" class="repo-grid">
+      <p class="loading">Loading repositories...</p>
+    </div>
+  </main>
+
+  <script>
+    const GITHUB_USERNAME = "nultinator";
+
+    async function fetchRepos() {
+      const container = document.getElementById("repos");
+      try {
+        const res = await fetch(
+          `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=24`
+        );
+        if (!res.ok) throw new Error("GitHub API error");
+        const repos = await res.json();
+
+        if (!repos.length) {
+          container.innerHTML = `<p class="error">No public repositories found.</p>`;
+          return;
+        }
+
+        container.innerHTML = repos
+          .filter(r => !r.fork)
+          .map(repo => `
+            <a class="repo-card" href="${repo.html_url}" target="_blank" rel="noopener noreferrer">
+              <h3>${repo.name}</h3>
+              <p>${repo.description || "No description provided."}</p>
+              <div class="repo-meta">
+                ${repo.language ? `<span>⚡ ${repo.language}</span>` : ""}
+                <span>⭐ ${repo.stargazers_count}</span>
+                <span>🍴 ${repo.forks_count}</span>
+              </div>
+            </a>
+          `).join("");
+      } catch (err) {
+        container.innerHTML = `<p class="error">Could not load repositories. <a href="https://github.com/${GITHUB_USERNAME}" style="color:#ffcccc">View on GitHub →</a></p>`;
+      }
+    }
+
+    fetchRepos();
+  </script>
+</body>
+</html>

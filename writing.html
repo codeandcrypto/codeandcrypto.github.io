@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Writing – CodeAndCrypto</title>
+  <meta name="description" content="Technical articles, how-to guides, and research writing by Jacob Nulty." />
+  <link rel="icon" href="CodeAndCrypto.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html">
+      <img src="CodeAndCrypto.png" alt="CodeAndCrypto logo" />
+    </a>
+  </nav>
+
+  <main>
+    <h1>Blog</h1>
+    <div id="posts" class="blog-grid">
+      <p class="loading">Loading articles...</p>
+    </div>
+  </main>
+
+  <script>
+    const MEDIUM_RSS = "https://medium.com/feed/@nultinator";
+    const RSS2JSON = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(MEDIUM_RSS)}&count=24`;
+
+    function formatDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString("en-US", {
+        year: "numeric", month: "long", day: "numeric"
+      });
+    }
+
+    function extractImage(content) {
+      const match = content.match(/<img[^>]+src="([^">]+)"/);
+      return match ? match[1] : null;
+    }
+
+    function stripHtml(html) {
+      const div = document.createElement("div");
+      div.innerHTML = html;
+      return div.textContent || div.innerText || "";
+    }
+
+    async function fetchPosts() {
+      const container = document.getElementById("posts");
+      try {
+        const res = await fetch(RSS2JSON);
+        if (!res.ok) throw new Error("Feed error");
+        const data = await res.json();
+
+        if (!data.items || !data.items.length) {
+          container.innerHTML = `<p class="error">No articles found.</p>`;
+          return;
+        }
+
+        container.innerHTML = data.items.map(item => {
+          const img = item.thumbnail || extractImage(item.content || item.description || "");
+          const snippet = stripHtml(item.description || item.content || "").slice(0, 120).trim();
+
+          return `
+            <a class="blog-card" href="${item.link}" target="_blank" rel="noopener noreferrer">
+              ${img ? `<img src="${img}" alt="${item.title}" loading="lazy" />` : ""}
+              <div class="blog-card-body">
+                <div class="date">${formatDate(item.pubDate)}</div>
+                <h3>${item.title}</h3>
+                <p>${snippet}${snippet.length >= 120 ? "…" : ""}</p>
+                <span class="read-more">Continue reading →</span>
+              </div>
+            </a>
+          `;
+        }).join("");
+      } catch (err) {
+        container.innerHTML = `<p class="error">Could not load articles. <a href="https://medium.com/@nultinator" style="color:#ffcccc" target="_blank">Read on Medium →</a></p>`;
+      }
+    }
+
+    fetchPosts();
+  </script>
+</body>
+</html>
