@@ -24,68 +24,52 @@
     </a>
   </nav>
 
-  <main>
-    <h1>Blog</h1>
-    <div id="posts" class="blog-grid">
-      <p class="loading">Loading articles...</p>
+  <main class="main">
+    <div class="content-box">
+      <h1>Writing</h1>
+      <p>I've written content all over the web. Topics range from faith and philosophy to development and technology.</p>
+      
+      <h2>CodeAndCrypto</h2>
+      <img src="codeandcrypto-substack.png" alt="CodeAndCrypto Substack Publication" />
+      <p>This is the one that started it all. It was originally hosted on Medium. However I migrated this publication to Subtack in 2025.</p>
+      <h3>Notable pieces</h3>
+      <ul>
+        <li><a href="https://codeandcryptodotdev.substack.com/p/what-is-rag-retrieval-augmented-generation">What is RAG?</a></li>
+        <li><a href="https://codeandcryptodotdev.substack.com/p/building-a-near-fully-autonomous">Building a (near) Full Autonomous Website</a></li>
+        <li><a href="https://codeandcryptodotdev.substack.com/p/what-is-determinism-and-why-do-you">What is Determinism and Why Do You Still Need It?</a></li>
+      </ul>
+
+      <h2>Bright Data</h2>
+      <img src="bright-data-byline.png" alt="Bright Data byline" />
+      <p>In 2024, I began writing for Bright Data. For them, I've written technical content, listicles, thought leadership and foundational guides as well.</p>
+      <h3>Notable pieces</h3>
+      <ul>
+        <li><a href="https://brightdata.com/blog/ai/rag-vs-fine-tuning">Retrieval-Augmented Generation vs. Fine-Tuning</a></li>
+        <li><a href="https://brightdata.com/blog/ai/agentic-vs-generative-ai">Agentic vs. Generative AI</a></li>
+        <li><a href="https://brightdata.com/blog/ai/zero-shot-learning">What is Zero-Shot Learning?</a></li>
+      </ul>
+
+      <h2>Firecrawl</h2>
+      <img src="firecrawl-byline.png" alt="Firecrawl byline" />
+      <p>I've been writing for Firecrawl since midway through 2026. For Firecrawl, I've written technical pieces, listicles, and full breakdowns on AI models.</p>
+      <h3>Notable pieces</h3>
+      <ul>
+        <li><a href="https://www.firecrawl.dev/blog/prompt-injection">What is Prompt Injection?</a></li>
+        <li><a href="https://www.firecrawl.dev/blog/agentic-ocr">What is Agentic OCR?</a></li>
+        <li><a href="https://www.firecrawl.dev/blog/ai-agent-architecture">What is AI Agent Architecture?</a></li>
+      </ul>
+
+      <h2>Data4AI</h2>
+      <img src="d4ai-byline.png" alt="Firecrawl byline" />
+      <p>For Data4AI, I wrote in detail thought leadership and foundational guides for a number of different vendors. Main focuses were web data and agentic AI in our ever evolving world.</p>
+      <h3>Notable pieces</h3>
+      <ul>
+        <li><a href="https://data4ai.com/blog/technical-how-tos/build-ai-coding-agent-with-python/">Building Your Own Coding Agent in Python</a></li>
+        <li><a href="https://data4ai.com/blog/training-data/handling-and-mitigating-biased-datasets/">Handling and Mitigating Biased Datasets</a></li>
+        <li><a href="https://data4ai.com/blog/technical-how-tos/build-an-ai-agent-with-mongodb/">How to Build an AI Agent Memory System with MongoDB</a></li>
+      </ul>
+
     </div>
   </main>
-
-  <script>
-    const MEDIUM_RSS = "https://medium.com/feed/@nultinator";
-    const RSS2JSON = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(MEDIUM_RSS)}&count=24`;
-
-    function formatDate(dateStr) {
-      return new Date(dateStr).toLocaleDateString("en-US", {
-        year: "numeric", month: "long", day: "numeric"
-      });
-    }
-
-    function extractImage(content) {
-      const match = content.match(/<img[^>]+src="([^">]+)"/);
-      return match ? match[1] : null;
-    }
-
-    function stripHtml(html) {
-      const div = document.createElement("div");
-      div.innerHTML = html;
-      return div.textContent || div.innerText || "";
-    }
-
-    async function fetchPosts() {
-      const container = document.getElementById("posts");
-      try {
-        const res = await fetch(RSS2JSON);
-        if (!res.ok) throw new Error("Feed error");
-        const data = await res.json();
-
-        if (!data.items || !data.items.length) {
-          container.innerHTML = `<p class="error">No articles found.</p>`;
-          return;
-        }
-
-        container.innerHTML = data.items.map(item => {
-          const img = item.thumbnail || extractImage(item.content || item.description || "");
-          const snippet = stripHtml(item.description || item.content || "").slice(0, 120).trim();
-
-          return `
-            <a class="blog-card" href="${item.link}" target="_blank" rel="noopener noreferrer">
-              ${img ? `<img src="${img}" alt="${item.title}" loading="lazy" />` : ""}
-              <div class="blog-card-body">
-                <div class="date">${formatDate(item.pubDate)}</div>
-                <h3>${item.title}</h3>
-                <p>${snippet}${snippet.length >= 120 ? "…" : ""}</p>
-                <span class="read-more">Continue reading →</span>
-              </div>
-            </a>
-          `;
-        }).join("");
-      } catch (err) {
-        container.innerHTML = `<p class="error">Could not load articles. <a href="https://medium.com/@nultinator" style="color:#ffcccc" target="_blank">Read on Medium →</a></p>`;
-      }
-    }
-
-    fetchPosts();
-  </script>
 </body>
 </html>
