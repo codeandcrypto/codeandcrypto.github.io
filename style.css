@@ -69,7 +69,7 @@ main h2 {
 
 /* Cards */
 .grid {
-  display: flex;
+  display: grid;
   grid-template-columns: repeat(4, 1fr);
   background-color: #fff;
   border-radius: 16px;
