@@ -11,9 +11,6 @@ body {
   min-height: 100vh;
 }
 
-a {
-  text-decoration: none;
-}
 
 /* Navbar */
 .navbar {
@@ -113,7 +110,7 @@ main h2 {
 .card p {
   font-size: 0.9rem;
   color: #3333cc;
-  text-decoration: underline;
+  text-decoration: none;
   line-height: 1.5;
 }
 
