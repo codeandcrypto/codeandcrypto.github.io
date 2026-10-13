@@ -13,6 +13,7 @@ body {
 
 ul {
   list-style: none;
+  border-bottom: 10px groove #000;
 }
 
 
